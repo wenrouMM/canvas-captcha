@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body{text-align: center}
+        canvas{background: #ccc}
+        p{cursor: default;}
+    </style>
+</head>
+<body>
+<input type="text" name="name" id="valueMsg">
+<button onclick="valueBut()">提交</button>
+<P onclick="clickBreak()">看不清，点击刷新验证码</P>
+<canvas id="c3" width="120" height="30"></canvas>
+<script>
+    var yzmData=''
+    var inputValue=document.getElementById("valueMsg");
+    var c3 = document.getElementById("c3");
+    var ctx = c3.getContext("2d");
+    //#验证一定是由服务器程序创建 php;java;node.js
+    //#而不是canvas客户端技术创建
+    //#练习
+    function  startFun() {
+        //1:创建矩形作为验证码背景
+        ctx.fillStyle = rc(180,233);//画布的颜色是180~233
+        ctx.fillRect(0,0,120,30);//画布的其实位置是从x为0，y为0，宽度为120，高度为30
+        //2:创建随机文字4个绘制背景上
+        var pool = "ABCDEFGHIJL01239abc";
+        for(var i=0;i<4;i++){
+            var c = pool[rn(0,pool.length)];
+            yzmData+=c
+            console.log('随机的验证码数字',yzmData)
+            console.log('验证码的长度是',yzmData.length)
+            ctx.textBaseline = "top";  //设置基线
+            ctx.fillStyle = rc(30,180);//设置文字颜色
+            ctx.font = "23px SimHei";  //设置字体大小
+            ctx.fillText(c,i*30+10,5);
+            //context.fillText(text,x,y,maxWidth);
+            //text规定在画布上输出的文本
+            //x开始绘制文本的x坐标位置
+            //y开始绘制文本的y坐标位置
+            //maxWidth允许的最大文本宽度
+        }
+        //3:创建5条干扰线
+        for(var i=0;i<5;i++){
+            ctx.beginPath();
+            ctx.strokeStyle = rc(0,255);
+            ctx.moveTo(rn(0,120),rn(0,30));
+            ctx.lineTo(rn(0,120),rn(0,30));
+            ctx.stroke();
+        }
+        //4:创建20个干扰点
+        for(var i=0;i<20;i++){
+            ctx.fillStyle = rc(0,255);
+            ctx.beginPath();
+            ctx.arc(rn(0,120),rn(0,30),1,0,360*Math.PI/180);
+            ctx.fill();
+        }
+        //随机大小 位置
+        function rn(min,max){
+            var n = Math.random()*(max-min)+min;
+            return Math.floor(n)
+        }
+        //随机色
+        function rc(min,max){
+            var r = rn(min,max);
+            var g = rn(min,max);
+            var b = rn(min,max);
+            return `rgb(${r},${g},${b})`;
+        }
+    }
+    startFun()
+    function clickBreak(){
+        yzmData=''
+        startFun()
+    }
+    function valueBut(){
+        console.log('input的value值',inputValue.value)
+        if(yzmData.length===4){
+            if(yzmData===inputValue.value){
+                alert('验证码长度符合输入框长度，可通过')
+            }else{
+                alert('验证码与输入框长度不符合，请重新填写')
+            }
+        }
+    }
+</script>
+</body>
+</html>
